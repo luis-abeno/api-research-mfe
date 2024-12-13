@@ -39,7 +39,11 @@ func main() {
 	r := gin.Default()
 
 	// Add CORS middleware
-	r.Use(cors.Default())
+	r.Use(cors.New(cors.Config{
+		AllowOrigins: []string{"https://research-mfe.vercel.app/"},
+		AllowMethods: []string{"GET", "POST"},
+		AllowHeaders: []string{"Origin", "Content-Type"},
+	}))
 
 	r.GET("/questions", func(c *gin.Context) {
 		rows, err := db.Query(`
