@@ -40,7 +40,7 @@ func main() {
 
 	// Add CORS middleware
 	r.Use(cors.New(cors.Config{
-		AllowOrigins: []string{"https://research-mfe.vercel.app/"},
+		AllowOrigins: []string{"https://research-mfe.vercel.app", "http://localhost:3000"},
 		AllowMethods: []string{"GET", "POST"},
 		AllowHeaders: []string{"Origin", "Content-Type"},
 	}))
