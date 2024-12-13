@@ -38,12 +38,21 @@ func main() {
 
 	r := gin.Default()
 
+	// Set trusted proxies
+    if err := r.SetTrustedProxies([]string{"https://research-mfe.vercel.app/"}); err != nil {
+        log.Fatal(err)
+    }
+
 	// Add CORS middleware
 	r.Use(cors.New(cors.Config{
 		AllowOrigins: []string{"https://research-mfe.vercel.app/"},
 		AllowMethods: []string{"GET", "POST"},
 		AllowHeaders: []string{"Origin", "Content-Type"},
 	}))
+
+	r.GET("/", func(c *gin.Context) {
+        c.JSON(http.StatusOK, gin.H{"message": "Health check passed"})
+    })
 
 	r.GET("/questions", func(c *gin.Context) {
 		rows, err := db.Query(`
