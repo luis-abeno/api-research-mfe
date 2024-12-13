@@ -38,11 +38,6 @@ func main() {
 
 	r := gin.Default()
 
-	// Set trusted proxies
-    if err := r.SetTrustedProxies([]string{"https://research-mfe.vercel.app/"}); err != nil {
-        log.Fatal(err)
-    }
-
 	// Add CORS middleware
 	r.Use(cors.New(cors.Config{
 		AllowOrigins: []string{"https://research-mfe.vercel.app/"},
