@@ -106,6 +106,19 @@ func main() {
 			return
 		}
 
+		for _, answer := range payload.Answers {
+			var exists bool
+			err := db.QueryRow("SELECT EXISTS(SELECT 1 FROM answers WHERE email = $1)", answer.Email).Scan(&exists)
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+				return
+			}
+			if exists {
+				c.JSON(http.StatusBadRequest, gin.H{"error": "email already exists"})
+				return
+			}
+		}
+
 		tx, err := db.Begin()
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
