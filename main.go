@@ -98,6 +98,7 @@ func main() {
 				FullName string `json:"full_name"`
 				Email	string `json:"email"`
 				Role     string `json:"role"`
+				WhatRole string `json:"what_role"`
 			} `json:"answers"`
 		}
 
@@ -126,8 +127,8 @@ func main() {
 		}
 
 		stmt, err := tx.Prepare(`
-			INSERT INTO answers (id_question, answer, full_name, email, role)
-			VALUES ($1, $2, $3, $4, $5)
+			INSERT INTO answers (id_question, answer, full_name, email, role, what_role)
+			VALUES ($1, $2, $3, $4, $5, $6)
 		`)
 		if err != nil {
 			tx.Rollback()
@@ -137,7 +138,7 @@ func main() {
 		defer stmt.Close()
 
 		for _, answer := range payload.Answers {
-			if _, err := stmt.Exec(answer.IDQuestion, answer.Answer.ID, answer.FullName, answer.Email, answer.Role); err != nil {
+			if _, err := stmt.Exec(answer.IDQuestion, answer.Answer.ID, answer.FullName, answer.Email, answer.Role, answer.WhatRole); err != nil {
 				tx.Rollback()
 				c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 				return
