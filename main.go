@@ -16,11 +16,13 @@ type Question struct {
 	ID       int    `json:"id"`
 	GroupID  int    `json:"group_id"`
 	Question string `json:"question"`
+	QuestionEn string `json:"question_en"`
 }
 
 type Group struct {
 	ID   int    `json:"id"`
 	Name string `json:"name"`
+	NameEn string `json:"name_en"`
 }
 
 func main() {
@@ -51,7 +53,7 @@ func main() {
 
 	r.GET("/questions", func(c *gin.Context) {
 		rows, err := db.Query(`
-			SELECT q.id, q.id_group, q.question, g.id, g.name 
+			SELECT q.id, q.id_group, q.question, q.question_en, g.id, g.name, g.name_en
 			FROM questions q 
 			JOIN groups g ON q.id_group = g.id
 			ORDER BY q.id_group, q.id
@@ -67,7 +69,7 @@ func main() {
 		for rows.Next() {
 			var q Question
 			var g Group
-			if err := rows.Scan(&q.ID, &q.GroupID, &q.Question, &g.ID, &g.Name); err != nil {
+			if err := rows.Scan(&q.ID, &q.GroupID, &q.Question, &q.QuestionEn, &g.ID, &g.Name, &g.NameEn); err != nil {
 				c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 				return
 			}
@@ -80,6 +82,7 @@ func main() {
 			groupList = append(groupList, gin.H{
 				"id":        groupID,
 				"name":      group.Name,
+				"name_en":   group.NameEn,
 				"questions": questions[groupID],
 			})
 		}
